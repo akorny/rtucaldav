@@ -134,6 +134,7 @@ CALDAV_USERNAME = "rtucaldav"
 CALDAV_PASSWORD = "not as secret"
 API_SECRET_KEY = "not as secret"
 CALDAV_URL = "http://127.0.0.1:5232"
+PUBLIC_CALDAV_URL_PREFIX = "http://127.0.0.1:5232"
 
 try:
     from rtucaldav.local_settings import *

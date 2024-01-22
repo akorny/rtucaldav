@@ -133,7 +133,8 @@ def api_get_calendar(req: HttpRequest) -> HttpResponse:
         db_calendar.name = program_name
         db_calendar.save()
     
-    calendar_url = update_calendar(db_calendar)
+    calendar_path = update_calendar(db_calendar).replace("http://", "").split("/")[1]
+    calendar_url = settings.PUBLIC_CALDAV_URL_PREFIX + "/" + calendar_path
     
     return JsonResponse({"status": "ok", "calendar_url": calendar_url})
 

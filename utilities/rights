@@ -5,5 +5,5 @@ permissions: rwRW
 
 [rtu]
 user: rtu
-collection: rtucaldav/[^/]+
+collection: .*
 permissions: rR
