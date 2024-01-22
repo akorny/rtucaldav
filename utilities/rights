@@ -1,0 +1,9 @@
+[rtucaldav]
+user: rtucaldav
+collection: .*
+permissions: rwRW
+
+[rtu]
+user: rtu
+collection: rtucaldav/[^/]+
+permissions: rR

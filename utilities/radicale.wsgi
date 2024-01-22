@@ -1,0 +1,1 @@
+from radicale import application

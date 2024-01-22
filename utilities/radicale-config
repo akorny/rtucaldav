@@ -1,0 +1,18 @@
+[auth]
+type = htpasswd
+htpasswd_encryption = bcrypt
+htpasswd_filename = /opt/radicale/passwd
+delay = 1
+
+[storage]
+filesystem_folder = /opt/data/collections
+
+[server]
+hosts = 0.0.0.0:5232, [::]:5232
+max_connections = 20
+max_content_length = 100000000
+timeout = 30
+
+[rights]
+type = from_file
+file = /opt/radicale/rights

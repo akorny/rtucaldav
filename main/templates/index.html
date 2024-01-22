@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- <div class="row">
+    <div class="col-12">
+        <p>
+            Izmantojot šo tīmekļvietni Jūs varēsiet apskatīties..
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h3>1. Instalējiet nepieciešamo programmatūru</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h3>2. Saņēmiet nodarbību grafika saiti</h3>
+    </div>
+</div> -->
+<div class="row">
+    <div class="col-md-6 col-12 mb-3">
+        <label>Semestris</label>
+        <select class="form-select" id="semester" aria-label="Semestris" onchange="loadPrograms()">
+            <option selected>Izvēlēties...</option>
+        </select>
+    </div>
+    <div class="col-md-6 col-12 mb-3">
+        <label>Programma</label>
+        <select class="form-select" id="program" aria-label="Programma" onchange="loadCourses()">
+            <option selected>Izvēlēties...</option>
+        </select>
+    </div>
+    <div class="col-md-6 col-12 mb-3">
+        <label>Kurss</label>
+        <select class="form-select" id="course" aria-label="Kurss" onchange="loadGroups()">
+            <option selected>Izvēlēties...</option>
+        </select>
+    </div>
+    <div class="col-md-6 col-12 mb-3">
+        <label>Grupa</label>
+        <select class="form-select" id="group" aria-label="Kurss" onchange="loadCalendar()">
+            <option selected>Izvēlēties...</option>
+        </select>
+    </div>
+</div>
+<div class="row" id="onload" style="display: none;">
+    <div class="col-12">
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="row">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Notiek sinhronizācija...</span>
+                </div>
+            </div>
+            <div class="row">
+                <strong>Uzgaidiet, kamēr mēs sinhronizēsim nodarbību sarakstu ar RTU serveriem...</strong>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" id="onfulfilled" style="display: none;">
+    <div class="col-12">
+        <p>
+            Jūsu nodarbību saraksts bija veiksmīgi sinhronizēts! Jūs tam varat piekļūt, 
+            izmantojot saiti <b id="caldavlink"></b>, lietotājvārdu <b>rtu</b> un 
+            paroli <b>rtu</b>!
+        </p>
+        <p>
+            <button type="button" class="btn btn-primary" onclick="calendarLinkCopy()" id="copylinkbtn">
+                Kopēt kalendāra saiti!
+            </button>
+        </p>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const semesterElement = document.getElementById("semester")
+    const programElement = document.getElementById("program")
+    const courseElement = document.getElementById("course")
+    const groupElement = document.getElementById("group")
+    const onloadElement = document.getElementById("onload")
+    const onfulfilledElement = document.getElementById("onfulfilled")
+    const caldavlinkElement = document.getElementById("caldavlink")
+    const copyLinkBtnElement = document.getElementById("copylinkbtn")
+    let programs = {}
+
+    function loadSemesters() {
+        fetch("{% url 'api/get-semesters' %}")
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "ok") {
+                    alert("Error loading semesters")
+                    return
+                }
+
+                for (sem of data.semesters) {
+                    semesterElement.innerHTML += `<option value='${sem.rtu_id}'>${sem.name}</option>`
+                }
+            })
+    }
+
+    function loadPrograms() {
+        programElement.innerHTML = "<option selected>Izvēlēties...</option>"
+        programs = {}
+        const semesterId = semesterElement.value
+
+        if (!semesterId) return;
+
+        fetch("{% url 'api/get-programs' %}?" + new URLSearchParams({
+            "semester-id": semesterId
+        }))
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "ok") {
+                    alert("Error loading programs")
+                    return
+                }
+
+                let options = ""
+                let programName
+                for (dep of data.programs) {
+                    options += `<optgroup label="${dep.titleLV} (${dep.code})">`
+
+                    for (prog of dep.program) {
+                        programName = `${prog.titleLV} (${prog.code})`
+                        programs[prog.programId] = programName
+                        options += `<option value='${prog.programId}'>${programName}</option>`
+                    }
+
+                    options += `</optgroup>`
+                }
+                programElement.innerHTML += options
+            })
+    }
+
+    function loadCourses() {
+        courseElement.innerHTML = "<option selected>Izvēlēties...</option>"
+        const semesterId = semesterElement.value
+        const programId = programElement.value
+
+        if (!semesterId || !programId) return;
+
+        fetch("{% url 'api/get-courses' %}?" + new URLSearchParams({
+            "semester-id": semesterId,
+            "program-id": programId,
+        }))
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "ok") {
+                    alert("Error loading courses")
+                    return
+                }
+
+                for (course of data.courses) {
+                    courseElement.innerHTML += `<option value='${course}'>${course}.</option>`
+                }
+            })
+    }
+
+    function loadGroups() {
+        groupElement.innerHTML = "<option selected>Izvēlēties...</option>"
+        const semesterId = semesterElement.value
+        const programId = programElement.value
+        const courseId = courseElement.value
+
+        if (!semesterId || !programId || !courseId) return;
+
+        fetch("{% url 'api/get-groups' %}?" + new URLSearchParams({
+            "semester-id": semesterId,
+            "program-id": programId,
+            "course-id": courseId,
+        }))
+            .then(response => response.json())
+            .then(data => {
+                if (data.status != "ok") {
+                    alert("Error loading groups")
+                    return
+                }
+
+                for (group of data.groups) {
+                    groupElement.innerHTML += `<option value='${group.semesterProgramId}|${group.group}'>${group.group}.</option>`
+                }
+            })
+    }
+
+    function loadCalendar() {
+        const semesterId = semesterElement.value
+        const programId = programElement.value
+        const courseId = courseElement.value
+        const [semesterProgramId, groupId] = groupElement.value.split("|")
+
+        if (!semesterId || !programId || !courseId || !semesterProgramId || !groupId) return;
+
+        onloadElement.style.display = "block"
+        onfulfilledElement.style.display = "none"
+        fetch("{% url 'api/get-calendar' %}?" + new URLSearchParams({
+            "semester-id": semesterId,
+            "program-id": programId,
+            "course-id": courseId,
+            "group-id": groupId,
+            "semester-program-id": semesterProgramId,
+            "program-name": programs[programId]
+        }))
+            .then(response => response.json())
+            .then(data => {
+                onloadElement.style.display = "none"
+                if (data.status != "ok") {
+                    alert("Error loading calendar")
+                    return
+                }
+
+                caldavlinkElement.innerHTML = data.calendar_url
+                onfulfilledElement.style.display = "block"
+            })
+    }
+
+    function calendarLinkCopy() {
+        navigator.clipboard.writeText(caldavlinkElement.innerText)
+            .then(() => {
+                copyLinkBtnElement.className = "btn btn-success"
+                copyLinkBtnElement.innerText = "Saite bija veiksmīgi nokopēta!"
+
+                setTimeout(() => {
+                    copyLinkBtnElement.className = "btn btn-primary"
+                    copyLinkBtnElement.innerText = "Kopēt kalendāra saiti!"
+                }, 2000)
+            })
+        
+    }
+
+    loadSemesters()
+</script>
+{% endblock %}

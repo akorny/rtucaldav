@@ -1,0 +1,15 @@
+[auth]
+type = none
+delay = 1
+
+[storage]
+filesystem_folder = ~/radicale/collections
+
+[server]
+hosts = 0.0.0.0:5232
+max_connections = 20
+max_content_length = 100000000
+timeout = 30
+
+[rights]
+type = authenticated
