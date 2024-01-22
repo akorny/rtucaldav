@@ -1,0 +1,14 @@
+version: '2'
+services:
+  rtucaldav:
+    build: ./rtucaldav
+    image: rtucaldav
+    container_name: rtucaldav
+    ports:
+      - 80:80
+      - 5232:5232
+    volumes:
+      - ./data:/opt/data
+    environment:
+      - HOST=rtucaldav.spacemug.id.lv
+      - CSRF_ORIGIN=https://rtucaldav.spacemug.id.lv

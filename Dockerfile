@@ -3,7 +3,9 @@ RUN apk update && apk upgrade && \
     apk add --no-cache  \
         python3 py3-pip py3-virtualenv \ 
         apache2 apache2-mod-wsgi apache2-utils \
-        sed bash git tzdata openssl curl
+        sed bash git tzdata openssl curl ca-certificates
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /opt
 COPY . rtucaldav/
@@ -16,6 +18,8 @@ RUN rm conf.d/*
 COPY utilities/rtucaldav.conf utilities/radicale.conf utilities/basic.conf conf.d/
 
 COPY utilities/crontab /etc/crontabs/root
+
+RUN update-ca-certificates
 
 EXPOSE 80
 EXPOSE 5232
