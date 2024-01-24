@@ -12,3 +12,4 @@ services:
     environment:
       - HOST=rtucaldav.spacemug.id.lv
       - CSRF_ORIGIN=https://rtucaldav.spacemug.id.lv
+      - CALDAV_PUBLIC_URL=https://rtucalendar.spacemug.id.lv
