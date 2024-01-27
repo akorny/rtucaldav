@@ -34,6 +34,7 @@ deactivate
 
 cd /opt/data
 chown apache:apache -R .
+chown apache:apache -R /var/logs/apache2
 
 cd /opt/radicale
 htpasswd -cbB /opt/radicale/passwd rtu rtu
