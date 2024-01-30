@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 
 from caldav import DAVClient
 from caldav.lib import error
-from requests import post
+from requests import post, exceptions
 from django.conf import settings
 
 from main.models import Calendar, Semester, Event
@@ -57,12 +57,18 @@ def update_calendar(db_calendar: Calendar) -> str:
 
         eventids_in_calendar = []
         while month_date.month == semester_end_date.month or month_date < semester_end_date:
-            rq = post(f"{settings.NODARBIBAS_BASE_URL}/getSemesterProgEventList", {
+            rs = post(f"{settings.NODARBIBAS_BASE_URL}/getSemesterProgEventList", {
                 "semesterProgramId": db_calendar.semester_program_id,
                 "year": str(month_date.year),
                 "month": str(month_date.month),
             })
-            events = rq.json()
+            try:
+                events = rs.json()
+            except exceptions.JSONDecodeError:
+                if rs.text.strip() != "":
+                    raise exceptions.JSONDecodeError(request=rs.request, response=rs)
+                
+                continue
 
             # Add or update events
             for eventdict in events:
