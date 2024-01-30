@@ -68,6 +68,7 @@ def update_calendar(db_calendar: Calendar) -> str:
                 if rs.text.strip() != "":
                     raise exceptions.JSONDecodeError(request=rs.request, response=rs)
                 
+                month_date += relativedelta(months=1)
                 continue
 
             # Add or update events
