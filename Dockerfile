@@ -3,7 +3,8 @@ RUN apk update && apk upgrade && \
     apk add --no-cache  \
         python3 py3-pip py3-virtualenv \ 
         apache2 apache2-mod-wsgi apache2-utils \
-        sed bash git tzdata openssl curl ca-certificates
+        sed bash git tzdata openssl curl ca-certificates \
+        musl-dev gcc cargo
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 

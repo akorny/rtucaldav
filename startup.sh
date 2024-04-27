@@ -40,7 +40,7 @@ htpasswd -cbB /opt/radicale/passwd rtu rtu
 htpasswd -bB /opt/radicale/passwd rtucaldav $CALDAV_PASSWORD
 python3 -m venv venv
 source venv/bin/activate
-python3 -m pip install radicale
+python3 -m pip install radicale==3.1.9
 deactivate
 
 cd /etc/apache2/conf.d
