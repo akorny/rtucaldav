@@ -28,7 +28,7 @@ sed -i "s|STRING_TO_CHANGE_6|$CALDAV_PUBLIC_URL|" local_settings.py
 
 cd ..
 python3 manage.py migrate
-python3 manage.py collectstatic --clear
+python3 manage.py collectstatic --clear --noinput
 python3 manage.py createsuperuser --noinput
 deactivate
 
