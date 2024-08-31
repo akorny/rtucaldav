@@ -18,7 +18,7 @@ WORKDIR /etc/apache2
 RUN rm conf.d/*
 COPY utilities/rtucaldav.conf utilities/radicale.conf utilities/basic.conf conf.d/
 
-COPY utilities/crontab /etc/crontabs/root
+COPY utilities/crontab /etc/cron/crontab
 
 RUN update-ca-certificates
 

@@ -46,9 +46,10 @@ deactivate
 cd /etc/apache2/conf.d
 sed -i "s|STRING_TO_CHANGE|$HOST|" basic.conf
 
-cd /etc/crontabs
+cd /etc/cron
 sed -i "s|STRING_TO_CHANGE_1|$CSRF_ORIGIN|" root
 sed -i "s|STRING_TO_CHANGE_2|$DJANGO_API_SECRET_KEY|" root
+crontab /etc/cron/crontab
+crond -f
 
-crond
 /usr/sbin/httpd -D FOREGROUND -f /etc/apache2/httpd.conf
