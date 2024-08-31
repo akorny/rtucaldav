@@ -50,6 +50,6 @@ cd /etc/cron
 sed -i "s|STRING_TO_CHANGE_1|$CSRF_ORIGIN|" crontab
 sed -i "s|STRING_TO_CHANGE_2|$DJANGO_API_SECRET_KEY|" crontab
 crontab /etc/cron/crontab
-crond -f
+crond
 
 /usr/sbin/httpd -D FOREGROUND -f /etc/apache2/httpd.conf
