@@ -47,8 +47,8 @@ cd /etc/apache2/conf.d
 sed -i "s|STRING_TO_CHANGE|$HOST|" basic.conf
 
 cd /etc/cron
-sed -i "s|STRING_TO_CHANGE_1|$CSRF_ORIGIN|" root
-sed -i "s|STRING_TO_CHANGE_2|$DJANGO_API_SECRET_KEY|" root
+sed -i "s|STRING_TO_CHANGE_1|$CSRF_ORIGIN|" crontab
+sed -i "s|STRING_TO_CHANGE_2|$DJANGO_API_SECRET_KEY|" crontab
 crontab /etc/cron/crontab
 crond -f
 
