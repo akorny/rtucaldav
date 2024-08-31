@@ -1,1 +1,1 @@
-0   */12   *   *   *   curl --connect-timeout 400 STRING_TO_CHANGE_1/api/cron/update-calendars?key=STRING_TO_CHANGE_2 >/dev/null 2>&1
+0   */12   *   *   *   curl --connect-timeout 400 STRING_TO_CHANGE_1/api/cron/update-calendars?key=STRING_TO_CHANGE_2 >>/var/log/cron.log 2>>/var/log/cron.error
